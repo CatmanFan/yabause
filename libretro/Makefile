@@ -164,10 +164,21 @@ else ifneq (,$(findstring wii,$(platform)))
 	ENDIANNESS_DEFINES = -DWORDS_BIGENDIAN -DMSB_FIRST -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float -D__ppc__
 	STATIC_LINKING = 1
 
+# Nintendo Switch (libnx)
 else ifeq ($(platform), switch)
-	TARGET := $(TARGET_NAME)_libretro_$(platform).a
-	include $(LIBTRANSISTOR_HOME)/libtransistor.mk
-	STATIC_LINKING=1
+include $(DEVKITPRO)/libnx/switch_rules
+    EXT=a
+    TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
+    DEFINES := -DSWITCH=1 -U__linux__ -U__linux -DRARCH_INTERNAL
+    CFLAGS	:=	 $(DEFINES) -g \
+                -O2 \
+				-fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -Wl,--allow-multiple-definition -specs=$(LIBNX)/switch.specs
+    CFLAGS += $(INCDIRS)
+    CFLAGS	+=	$(INCLUDE)  -D__SWITCH__
+    CXXFLAGS := $(ASFLAGS) $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+    CFLAGS += -std=gnu11
+HAVE_THREADS = 0
+STATIC_LINKING = 1
 
 # ARM
 else ifneq (,$(findstring armv,$(platform)))
