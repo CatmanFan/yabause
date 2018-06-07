@@ -170,7 +170,6 @@ else ifeq ($(platform), switch)
 	include $(LIBTRANSISTOR_HOME)/libtransistor.mk
 	STATIC_LINKING=1
 
-
 # Nintendo Switch (libnx)
 else ifeq ($(platform), switch)
 include $(DEVKITPRO)/libnx/switch_rules
